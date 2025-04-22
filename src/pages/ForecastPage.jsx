@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import BackgroundImage from './../assets/images/forcastImage.jpg';
-import loadingGif from './../assets/images/la.gif';
+// import loadingGif from './../assets/images/la.gif';
+import PageLoader from './PageLoader';
 
 const ForecastPage = () => {
 	const [current, setCurrent] = useState('');
@@ -128,7 +129,6 @@ const ForecastPage = () => {
 			.then(async (data) => {
 				const result = await data.json();
 				console.log(result);
-				setLoading(false);
 				setCurrent(result.current);
 				setForecast(result.forecast);
 				setLocation(result.location);
@@ -137,184 +137,190 @@ const ForecastPage = () => {
 			})
 			.catch((error) => {
 				console.log(error);
-				setLoading(false);
 			})
 			.finally(() => {
 				setLoading(false);
-
 				return;
 			});
 	};
+
 	useEffect(() => {
-		if (city && city.length >= 3) {
-			handleForecastFetch();
-		}
+		handleForecastFetch();
 	}, [city]);
 
 	console.log('fpre', forecast);
 	return (
-		<div
-			className="flex flex-col p-10 mx-auto  space-y-12  w-full bg-cover bg-center   min-h-screen bg-no-repeat "
-			style={{
-				backgroundImage: `url(${BackgroundImage})`,
-			}}
-		>
-			<div className="flex space-x-12 items-center lg:space-x-54 xl:space-x-80 ">
-				<div>
-					<li
-						onClick={() => navigate('/')}
-						className="list-none cursor-pointer    text-white font-bold hover:border-b-2 hover:border-white"
-					>
-						Back
-					</li>
-				</div>
-				<div className="flex justify-between items-center space-x-4 px-5 border-white hover:border-amber-200  py-2 rounded-3xl border-2">
-					<button onSubmit={handleForecastFetch}>
-						<select
-							onChange={(e) => setCity(e.target.value)}
-							className="block outline-none text-white  font-bold w-[170px] xxsm:w-[150px] md:w-[500px] lg:w-[600px] px-2"
-							value={city}
-						>
-							{cityArray.map((item, index) => (
-								<option
-									className="bg-amber-200 text-white"
-									key={index}
-									value={item.label}
-								>
-									{item.label}
-								</option>
-							))}
-						</select>
-					</button>
-				</div>
-			</div>
+		<div>
 			{loading ? (
-				<div className="flex  justify-center items-center h-[500px]">
-					<img src={loadingGif} alt="Loading..." className="w-32 h-32" />
-				</div>
+				<PageLoader />
 			) : (
-				<section>
-					<div className="flex flex-col md:flex-row justify-around space-x-8 ">
-						<div className="flex flex-col space-y-4 md:space-y-0 items-center text-center">
-							<img
-								className=" w-50 h-50 md:w-30 md:h-30"
-								src={current?.condition?.icon}
-								alt=""
-							/>
-							<p className=" text-white text-lg md:text-md font-medium">
-								Sunrise: {forecast.forecastday?.[0].astro?.sunrise}
-							</p>
-							<p className=" text-white text-lg md:text-md font-medium">
-								Sunset: {forecast.forecastday?.[0].astro?.sunset}
-							</p>
+				<div
+					className="flex flex-col p-10 mx-auto  space-y-12  w-full bg-cover bg-center   min-h-screen bg-no-repeat "
+					style={{
+						backgroundImage: `url(${BackgroundImage})`,
+					}}
+				>
+					<div className="flex space-x-12 items-center lg:space-x-54 xl:space-x-80 ">
+						<div>
+							<li
+								onClick={() => navigate('/')}
+								className="list-none cursor-pointer    text-white font-bold hover:border-b-2 hover:border-white"
+							>
+								Back
+							</li>
 						</div>
-						<div className="flex flex-col space-y-4  md:space-y-0 text-center">
-							<p className="text-3xl md:text-xl text-white font-medium">
-								{location?.localtime}
-							</p>
-							<p className=" text-yellow-300 text-6xl md:text-4xl  font-medium">
-								{current?.temp_c}°C
-							</p>
-							<p className="text-white text-lg md:text-md font-medium">
-								{current?.condition?.text}
-							</p>
-							<p className="text-white text-lg md:text-md font-medium">
-								Feels like {Math.round(current?.temp_c + 1)}°{' '}
-							</p>
-							<p className="text-white text-lg md:text-md font-medium ">
-								{' '}
-								{location?.country}
-							</p>
-							<p className="text-white text-lg md:text-md font-medium">
-								{location?.tz_id}
-							</p>
-						</div>
-						<div className="flex flex-col space-y-2 md:space-x-0 mt-2 md:mt-0 text-center">
-							<p className="text-white font-medium uppercase text-3xl md:text-xl">
-								more details
-							</p>
-							<p className="text-white text-lg md:text-md font-medium text-md">
-								Wind speed{' '}
-								<span className="font-semibold text-lg md:text-md">
-									{current?.wind_kph} km/h
-								</span>
-							</p>
-							<p className="text-white font-medium text-lg md:text-md">
-								Air humidity{' '}
-								<span className="font-semibold text-lg">
-									{current?.humidity}%
-								</span>
-							</p>
-							<p className="text-white font-medium text-lg md:text-md">
-								Pressure{' '}
-								<span className="font-semibold text-lg md:text-md">
-									{current?.pressure_mb}mb
-								</span>{' '}
-							</p>
-							<p className="text-white font-medium text-lg md:text-md">
-								Wind degree{' '}
-								<span className="font-semibold text-lg md:text-md">
-									{current?.wind_degree}°
-								</span>{' '}
-							</p>
-						</div>
-						<div className="flex flex-col p-4 mt-6 md:max-h-70 md:mt-0 bg-white/30 backdrop-blur-md rounded-xl shadow-2xl font-medium text-white ">
-							<div>
-								<h1 className="text-xl">3-Day Forecast</h1>
-							</div>
-							<div className="flex flex-col mx-auto md:flex-row space-x-12 ">
-								{forecast?.forecastday?.map((items, index) => (
-									<div key={index} className="">
-										<img src={items.day.condition.icon} alt="" />
-										<p className="text-lg md:text-md">{items.day.avgtemp_c}°</p>
-										<h1 className="text-lg md:text-md">
-											{items.day.condition.text}
-										</h1>
-										<hr className="md:hidden" />
-									</div>
+						<div className="flex justify-between items-center space-x-4 px-5 border-white hover:border-amber-200  py-2 rounded-3xl border-2">
+							<select
+								onChange={(e) => setCity(e.target.value)}
+								className="block outline-none text-white  font-bold w-[170px] xxsm:w-[150px] md:w-[500px] lg:w-[600px] px-2"
+								value={city}
+							>
+								{cityArray.map((item, index) => (
+									<option
+										className="bg-amber-200 text-white"
+										key={index}
+										value={item.label}
+									>
+										{item.label}
+									</option>
 								))}
-							</div>
-							{/* <div>
-							<img src={forecast.forecastday?.[0].day?.condition.icon} />
-							<p>{forecast.forecastday?.[0].day?.avgtemp_c}</p>
-							<p>{forecast.forecastday?.[0].day?.condition.text}</p>
-										</div>
-										<div>
-							<img src={forecast.forecastday?.[1].day?.condition.icon} />
-							<p>{forecast.forecastday?.[1].day?.avgtemp_c}</p>
-							<p>{forecast.forecastday?.[1].day?.condition.text}</p>
-										</div>
-										<div>
-							<img src={forecast.forecastday?.[2].day?.condition.icon} />
-							<p>{forecast.forecastday?.[2].day?.avgtemp_c}</p>
-							<p>{forecast.forecastday?.[2].day?.condition.text}</p>
-										</div> */}
+							</select>
 						</div>
 					</div>
-					<div>
-						<div className="w-[100%] flex flex-col space-y-4 md:space-y-0  md:max-h-86 p-10 bg-white/30 backdrop-blur-md rounded-xl shadow-2xl font-medium text-white mx-auto mt-10 ">
-							<h1 className="text-xl">Hourly Forecast</h1>
-							<div className="flex flex-col mx-auto md:flex-row space-x-4">
-								{forecast?.forecastday?.[0].hour?.map(
-									(items, index) =>
-										index > 7 &&
-										index < 22 &&
-										index % 2 == 0 && (
-											<div key={index}>
-												<p>{items.temp_c}°</p>
-												<img src={items.condition.icon} alt="" />
-												<p className="text-lg md:text-md">{items.time}</p>
+					{loading ? (
+						// <div className="flex  justify-center items-center h-[500px]">
+						// 	<img src={loadingGif} alt="Loading..." className="w-32 h-32" />
+						// </div>
+						<div>
+							<PageLoader />
+						</div>
+					) : (
+						<section>
+							<div className="flex flex-col md:flex-row justify-around space-x-8 ">
+								<div className="flex flex-col space-y-4 md:space-y-0 items-center text-center">
+									<img
+										className=" w-50 h-50 md:w-30 md:h-30"
+										src={current?.condition?.icon}
+										alt=""
+									/>
+									<p className=" text-white text-lg md:text-md font-medium">
+										Sunrise: {forecast.forecastday?.[0].astro?.sunrise}
+									</p>
+									<p className=" text-white text-lg md:text-md font-medium">
+										Sunset: {forecast.forecastday?.[0].astro?.sunset}
+									</p>
+								</div>
+								<div className="flex flex-col space-y-4  md:space-y-0 text-center">
+									<p className="text-3xl md:text-xl text-white font-medium">
+										{location?.localtime}
+									</p>
+									<p className=" text-yellow-300 text-6xl md:text-4xl  font-medium">
+										{current?.temp_c}°C
+									</p>
+									<p className="text-white text-lg md:text-md font-medium">
+										{current?.condition?.text}
+									</p>
+									<p className="text-white text-lg md:text-md font-medium">
+										Feels like {Math.round(current?.temp_c + 1)}°{' '}
+									</p>
+									<p className="text-white text-lg md:text-md font-medium ">
+										{' '}
+										{location?.country}
+									</p>
+									<p className="text-white text-lg md:text-md font-medium">
+										{location?.tz_id}
+									</p>
+								</div>
+								<div className="flex flex-col space-y-2 md:space-x-0 mt-2 md:mt-0 text-center">
+									<p className="text-white font-medium uppercase text-3xl md:text-xl">
+										more details
+									</p>
+									<p className="text-white text-lg md:text-md font-medium text-md">
+										Wind speed{' '}
+										<span className="font-semibold text-lg md:text-md">
+											{current?.wind_kph} km/h
+										</span>
+									</p>
+									<p className="text-white font-medium text-lg md:text-md">
+										Air humidity{' '}
+										<span className="font-semibold text-lg">
+											{current?.humidity}%
+										</span>
+									</p>
+									<p className="text-white font-medium text-lg md:text-md">
+										Pressure{' '}
+										<span className="font-semibold text-lg md:text-md">
+											{current?.pressure_mb}mb
+										</span>{' '}
+									</p>
+									<p className="text-white font-medium text-lg md:text-md">
+										Wind degree{' '}
+										<span className="font-semibold text-lg md:text-md">
+											{current?.wind_degree}°
+										</span>{' '}
+									</p>
+								</div>
+								<div className="flex flex-col p-4 mt-6 md:max-h-70 md:mt-0 bg-white/30 backdrop-blur-md rounded-xl shadow-2xl font-medium text-white ">
+									<div>
+										<h1 className="text-xl">3-Day Forecast</h1>
+									</div>
+									<div className="flex flex-col mx-auto md:flex-row space-x-12 ">
+										{forecast?.forecastday?.map((items, index) => (
+											<div key={index} className="">
+												<img src={items.day.condition.icon} alt="" />
 												<p className="text-lg md:text-md">
-													{items.condition.text}
+													{items.day.avgtemp_c}°
 												</p>
+												<h1 className="text-lg md:text-md">
+													{items.day.condition.text}
+												</h1>
 												<hr className="md:hidden" />
 											</div>
-										)
-								)}
+										))}
+									</div>
+									{/* <div>
+								<img src={forecast.forecastday?.[0].day?.condition.icon} />
+								<p>{forecast.forecastday?.[0].day?.avgtemp_c}</p>
+								<p>{forecast.forecastday?.[0].day?.condition.text}</p>
+											</div>
+											<div>
+								<img src={forecast.forecastday?.[1].day?.condition.icon} />
+								<p>{forecast.forecastday?.[1].day?.avgtemp_c}</p>
+								<p>{forecast.forecastday?.[1].day?.condition.text}</p>
+											</div>
+											<div>
+								<img src={forecast.forecastday?.[2].day?.condition.icon} />
+								<p>{forecast.forecastday?.[2].day?.avgtemp_c}</p>
+								<p>{forecast.forecastday?.[2].day?.condition.text}</p>
+											</div> */}
+								</div>
 							</div>
-						</div>
-					</div>
-				</section>
+							<div>
+								<div className="w-[100%] flex flex-col space-y-4 md:space-y-0  md:max-h-86 p-10 bg-white/30 backdrop-blur-md rounded-xl shadow-2xl font-medium text-white mx-auto mt-10 ">
+									<h1 className="text-xl">Hourly Forecast</h1>
+									<div className="flex flex-col mx-auto md:flex-row space-x-4">
+										{forecast?.forecastday?.[0].hour?.map(
+											(items, index) =>
+												index > 7 &&
+												index < 22 &&
+												index % 2 == 0 && (
+													<div key={index}>
+														<p>{items.temp_c}°</p>
+														<img src={items.condition.icon} alt="" />
+														<p className="text-lg md:text-md">{items.time}</p>
+														<p className="text-lg md:text-md">
+															{items.condition.text}
+														</p>
+														<hr className="md:hidden" />
+													</div>
+												)
+										)}
+									</div>
+								</div>
+							</div>
+						</section>
+					)}
+				</div>
 			)}
 		</div>
 	);

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import BackgroundImage from './../assets/images/img2.jpg';
 import { useNavigate } from 'react-router';
 import loadingGif from './../assets/images/la.gif';
+import PageLoader from './PageLoader';
 
 const TodayWeatherPage = () => {
 	const [city, setCity] = useState('lagos');
@@ -114,7 +115,7 @@ const TodayWeatherPage = () => {
 		{ key: 100, label: 'Monaco' },
 	];
 
-	const HandleFetch = async () => {
+	const handleFetch = async () => {
 		setLoading(true);
 		const url = `https://weatherapi-com.p.rapidapi.com/current.json?q=${city}`;
 		const options = {
@@ -127,14 +128,12 @@ const TodayWeatherPage = () => {
 		await fetch(url, options)
 			.then(async (data) => {
 				const result = await data.json();
-				setLoading(false);
 				console.log(result);
 				console.log(result.current.cloud);
 				setCurrent(result.current);
 				setLocation(result.location);
 			})
 			.catch((error) => {
-				setLoading(false);
 				console.log(error);
 			})
 			.finally(() => {
@@ -144,79 +143,83 @@ const TodayWeatherPage = () => {
 	};
 
 	useEffect(() => {
-		if (city && city.length >= 3) {
-			HandleFetch();
-		}
+		handleFetch();
 	}, [city]);
 
 	return (
 		<div>
-			<div className="flex flex-col  mx-auto   w-full min-h-screen p-5 ">
-				<div className="flex mb-5 justify-around shadow-lg pb-2">
-					<li
-						onClick={() => navigate('/')}
-						className="list-none  bg-violet-400 py-2 px-6 rounded-xl font-medium cursor-pointer text-white"
-					>
-						Home
-					</li>
-					<form onSubmit={HandleFetch}>
-						<select
-							className="block w-[100%] md:w-[400px] lg:w-[600px]  px-4 bg-blue-00 py-2 rounded-3xl border-2"
-							onChange={(e) => setCity(e.target.value)}
-							value={city}
-						>
-							{cityArray.map((item, index) => (
-								<option value={item.label} key={index}>
-									{item.label}
-								</option>
-							))}
-						</select>
-					</form>
-				</div>
-				{loading ? (
-					<div className="flex bg-white justify-center items-center h-[500px]">
-						<img src={loadingGif} alt="Loading..." className="w-32 h-32" />
-					</div>
-				) : (
-					<div
-						className="flex flex-col md:flex-row justify-around rounded-2xl w-[100%] h-full lg:h-[500px] mt-5 p-12 bg-cover bg-no-repeat bg-center   "
-						style={{ backgroundImage: `url(${BackgroundImage})` }}
-					>
-						<div className="flex flex-col space-y-8">
-							<p className="text-3xl  lg:text-9xl font-bold text-white capitalize mt-12 ">
-								{city}
-							</p>
-							<p className="text-2xl lg:text-6xl text-white font-semibold">
-								{location?.localtime}
-							</p>
-							<div className="flex space-x-12 lg:space-x-28">
-								<p className="text-white font-semibold text-lg md:text-xl lg:text-2xl">
-									{location?.country}
-								</p>
-								<p className="text-white text-lg md:text-xl lg:text-2xl font-semibold">
-									{location?.tz_id}
-								</p>
+			{loading ? (
+				<PageLoader />
+			) : (
+				<div>
+					<div className="flex flex-col  mx-auto   w-full min-h-screen p-5 ">
+						<div className="flex mb-5 justify-around shadow-lg pb-2">
+							<li
+								onClick={() => navigate('/')}
+								className="list-none  bg-violet-400 py-2 px-6 rounded-xl font-medium cursor-pointer text-white"
+							>
+								Home
+							</li>
+							<form>
+								<select
+									className="block w-[100%] md:w-[400px] lg:w-[600px]  px-4 bg-blue-00 py-2 rounded-3xl border-2"
+									onChange={(e) => setCity(e.target.value)}
+									value={city}
+								>
+									{cityArray.map((item, index) => (
+										<option value={item.label} key={index}>
+											{item.label}
+										</option>
+									))}
+								</select>
+							</form>
+						</div>
+						{loading ? (
+							<div className="flex bg-white justify-center items-center h-[500px]">
+								<img src={loadingGif} alt="Loading..." className="w-32 h-32" />
 							</div>
-						</div>
-						<div className="bg-violet-400 h-72 max-w-[220px] mt-12 p-6 rounded-3xl">
-							<p className="text-white font-semibold text-lg lg:text-2xl">
-								{current?.condition.text}
-							</p>
-							<img
-								className="w-32 h-32 border-none"
-								src={current?.condition.icon}
-								alt=""
-							/>
-							<p className="text-white text-lg font-medium">
-								Temperature: {current?.temp_c}°C
-							</p>
-							<p className="text-white text-lg  font-medium">
-								Wind: {current?.wind_kph}km/h{' '}
-							</p>
-						</div>
+						) : (
+							<div
+								className="flex flex-col md:flex-row justify-around rounded-2xl w-[100%] h-full lg:h-[500px] mt-5 p-12 bg-cover bg-no-repeat bg-center   "
+								style={{ backgroundImage: `url(${BackgroundImage})` }}
+							>
+								<div className="flex flex-col space-y-8">
+									<p className="text-3xl  lg:text-9xl font-bold text-white capitalize mt-12 ">
+										{city}
+									</p>
+									<p className="text-2xl lg:text-6xl text-white font-semibold">
+										{location?.localtime}
+									</p>
+									<div className="flex space-x-12 lg:space-x-28">
+										<p className="text-white font-semibold text-lg md:text-xl lg:text-2xl">
+											{location?.country}
+										</p>
+										<p className="text-white text-lg md:text-xl lg:text-2xl font-semibold">
+											{location?.tz_id}
+										</p>
+									</div>
+								</div>
+								<div className="bg-violet-400 h-72 max-w-[220px] mt-12 p-6 rounded-3xl">
+									<p className="text-white font-semibold text-lg lg:text-2xl">
+										{current?.condition.text}
+									</p>
+									<img
+										className="w-32 h-32 border-none"
+										src={current?.condition.icon}
+										alt=""
+									/>
+									<p className="text-white text-lg font-medium">
+										Temperature: {current?.temp_c}°C
+									</p>
+									<p className="text-white text-lg  font-medium">
+										Wind: {current?.wind_kph}km/h{' '}
+									</p>
+								</div>
+							</div>
+						)}
 					</div>
-				)}
-			</div>
+				</div>
+			)}
 		</div>
 	);
 };
