@@ -1,4 +1,4 @@
-###WeatherPro
+#WeatherPro
 Welcome to the WeatherPro, a responsive React component built to showcase weather forecasts from around the world with a sleek design and intuitive user interface.
 
 🌐 Features
