@@ -1,4 +1,4 @@
-#WeatherPro
+# WeatherPro
 Welcome to the WeatherPro, a responsive React component built to showcase weather forecasts from around the world with a sleek design and intuitive user interface.
 
 🌐 Features
@@ -32,7 +32,6 @@ Footer
 
 Simple and informative footer with policy links.
 
-
 🛠 Technologies Used
 React – Frontend JavaScript library
 
@@ -48,6 +47,18 @@ The component uses media queries for responsive design.
 Navigation is handled using React Router's useNavigate hook.
 
 Flag images and icons must be correctly located in the assets folder for the imports to work.
+
+📷 Screenshots
+![alt text](<localhost_3000_forecast(Nest Hub Max).png>)
+
+✨ Future Improvements
+Add animation to flag cards on hover.
+
+Fetch top city weather forecasts dynamically via API.
+
+Integrate user login and auth from the landing page.
+
+
 
 
 
