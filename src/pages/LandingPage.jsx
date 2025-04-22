@@ -1,7 +1,7 @@
 import BackgroundImage from './../assets/images/img2.jpg';
 import CloseIcon from './../assets/svgs/CloseIcon.jsx';
 import BarIcon from '../assets/svgs/BarIcon.jsx';
-// import flag1 from './../assets/Flag_of_Brazil';
+import PageLoader from './PageLoader.jsx';
 import flag1 from './../assets/Flag/Flag_of_Germany.png';
 import flag2 from './../assets/Flag/Flag_of_Canada.png';
 import flag3 from './../assets/Flag/Flag_of_Nigeria.png';
@@ -46,7 +46,10 @@ const LandingPage = () => {
 								>
 									Today's weather
 								</li>
-								<li className="text-white md:hidden lg:block text-lg font-semibold  list-none cursor-pointer hover:border-b-2 hover:border-white">
+								<li
+									onClick={() => navigate('/loader')}
+									className="text-white md:hidden lg:block text-lg font-semibold  list-none cursor-pointer hover:border-b-2 hover:border-white"
+								>
 									Research
 								</li>
 								<li
@@ -108,8 +111,6 @@ const LandingPage = () => {
 					)}
 				</div>
 			</div>
-
-
 
 			<div className="flex flex-col md:flex-row mt-15 md:mt-30 space-y-10 md:space-y-0 md:space-x-20  lg:space-x-64">
 				<div className="w-[100%] md:w-[45%] lg:w-[60%] ">
